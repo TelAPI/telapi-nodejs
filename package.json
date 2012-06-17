@@ -15,6 +15,10 @@
     "optionalDependencies": {},
     "devDependencies": {},
     "engines": { "node": ">=0.6.19" },
+    "modules" : {
+        "client"     : "./lib/client",
+        "inboundxml" : "./lib/inboundxml"
+    }
     "main"    : "index",
     "scripts" : {
         "test": "make test"
