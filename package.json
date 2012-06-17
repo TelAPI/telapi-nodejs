@@ -1,29 +1,22 @@
 {
-    "name": "TelAPI",
-    "description": "A Telephony API That Does More!",
-    "repository": "git://github.com/teltechsystems/telapi-nodejs.git",
-    "version": "0.1.0",
-    "keywords": ["telapi", "telephony", "api", "wrapper"],
-    "maintainers": [
-        {
-            "name": "Nevio Vesic",
-            "email": "nevio@telapi.com"
-        }
+    "name": "telapi",
+    "description" : "A Telephony API That Does More!",
+    "homepage"    : "http://www.telapi.com",
+    "repository"  : {
+        "type" : "git",
+        "url"  : "https://github.com/teltechsystems/telapi-nodejs.git"
+    },
+    "version"      : "0.1.0",
+    "keywords"     : ["telapi", "telephony", "api", "wrapper"],
+    "contributors" : [
+        { "name": "Nevio Vesic", "email": "nevio@telapi.com" }
     ],
     "dependencies": { },
     "optionalDependencies": {},
     "devDependencies": {},
-    "engines": {
-        "node": ">=0.4.8"
-    },
-    "directories": {
-        "lib": "./lib",
-        "bin": "./bin"
-    },
-    "publishConfig": {
-        "registry": "http://registry.npmjs.org/"
-    },
-    "scripts": {
-        "prepublish": "npm install"
+    "engines": { "node": ">=0.6.19" },
+    "main"    : "index",
+    "scripts" : {
+        "test": "make test"
     }
 }

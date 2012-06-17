@@ -1,0 +1,5 @@
+*.markdown
+*.md
+.git*
+Makefile
+.DS_Store
