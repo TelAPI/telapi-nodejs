@@ -11,7 +11,9 @@
     "contributors" : [
         { "name": "Nevio Vesic", "email": "nevio@telapi.com" }
     ],
-    "dependencies": { },
+    "dependencies": { 
+        "strings": ">=0.2.1",
+    },
     "optionalDependencies": {},
     "devDependencies": {},
     "engines": { "node": ">=0.6.19" },

@@ -2,7 +2,6 @@
 
 var util       = require("util")
 var InboundXML = require("../lib/inboundxml")
-var testsch    = require("../lib/schemas/telapi.json")
 
 util.log("Starting out TelAPI InboundXML tests ...")
 util.log("")
