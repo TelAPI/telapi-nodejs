@@ -9,9 +9,7 @@ util.log("...........................................")
 
 
 
-var client = new Client.TelAPI('ACadea151d708d45febbbb5104c98977ca', '096353c24f3845678de1f5f5f5a7d694');
+var client = new Client.TelAPI('ACCOUNT_SID', 'AUTH_TOKEN');
 
 
 var account = client.get('account');
-
-client.get(['calls', 'CALLSID']);
