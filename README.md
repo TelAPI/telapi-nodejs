@@ -13,10 +13,11 @@ To install via npm:
     
     npm install telapi
 
-To install by hand, download the module and create a symlink in `~/.node_libraries`
-
-    $ ln -s /path/to/telapi-nodejs ~/.node-libraries/telapi
-
+To install by hand, download the module and run npm installation from local directory
+	
+	$ cd ~
+	$ git clone https://github.com/teltechsystems/telapi-nodejs.git telapi-nodejs
+    $ npm install ./telapi-nodejs
 
 ## Usage
 

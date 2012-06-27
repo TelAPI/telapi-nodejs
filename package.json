@@ -1,28 +1,36 @@
 {
     "name": "telapi",
-    "description" : "A Telephony API That Does More!",
-    "homepage"    : "http://www.telapi.com",
-    "repository"  : {
-        "type" : "git",
-        "url"  : "https://github.com/teltechsystems/telapi-nodejs.git"
+    "description": "A Telephony API That Does More!",
+    "homepage": "http://www.telapi.com",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/teltechsystems/telapi-nodejs.git"
     },
-    "version"      : "0.1.0",
-    "keywords"     : ["telapi", "telephony", "api", "wrapper"],
-    "contributors" : [
-        { "name": "Nevio Vesic", "email": "nevio@telapi.com" }
+    "version": "0.1.0",
+    "keywords": [
+        "telapi",
+        "telephony",
+        "api",
+        "wrapper",
+        "helper"
     ],
-    "dependencies": { 
-        "strings": ">=0.2.1",
+    "contributors": [
+        {
+            "name": "Nevio Vesic",
+            "email": "nevio@telapi.com"
+        },
+        {
+            "name": "TelAPI",
+            "email": "info@telapi.com"
+        }
+    ],
+    "dependencies": {
+        "string": ">=0.2.1"
     },
     "optionalDependencies": {},
     "devDependencies": {},
-    "engines": { "node": ">=0.6.19" },
-    "modules" : {
-        "client"     : "./lib/client",
-        "inboundxml" : "./lib/inboundxml"
-    }
-    "main"    : "index",
-    "scripts" : {
-        "test": "make test"
-    }
+    "engines": {
+        "node": ">=0.6.19"
+    },
+    "main": "index"
 }
