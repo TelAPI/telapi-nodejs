@@ -32,18 +32,18 @@ var client = new Client(account_sid, auth_token);
 // Send new SMS message. 
 // Make sure that From and To parameters are replaced prior you can send SMS message.
 client.create(
-	'sms_messages', 
-	{ 
-		"From" : "(XXX) XXX-XXXX", 
-		"To"   : "(XXX) XXX-XXXX", 
-		"Body" : "Example message sent from TelAPI Node.JS helper"
-	},
-	function(response) { // SUCCESS CALLBACK
-		util.log("SMS successfully sent. SMS SID: " + response.sid);
-	},
-	function(error) { // ERROR CALLBACK
-		util.log("ERROR OCCURED: " + error)
-	}
+    'sms_messages', 
+    { 
+        "From" : "(XXX) XXX-XXXX", 
+        "To"   : "(XXX) XXX-XXXX", 
+        "Body" : "Example message sent from TelAPI Node.JS helper"
+    },
+    function(response) { // SUCCESS CALLBACK
+        util.log("SMS successfully sent. SMS SID: " + response.sid);
+    },
+    function(error) { // ERROR CALLBACK
+        util.log("ERROR OCCURED: " + error)
+    }
 );
 
 
