@@ -6,13 +6,14 @@
         "type": "git",
         "url": "https://github.com/teltechsystems/telapi-nodejs.git"
     },
-    "version": "0.1.0",
+    "version": "0.1.1",
     "keywords": [
         "telapi",
         "telephony",
         "api",
         "wrapper",
-        "helper"
+        "helper",
+        "inboundxml"
     ],
     "contributors": [
         {
@@ -30,7 +31,7 @@
     "optionalDependencies": {},
     "devDependencies": {},
     "engines": {
-        "node": ">=0.6.19"
+        "node": ">=0.4.0"
     },
     "main": "index"
 }
