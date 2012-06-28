@@ -19,11 +19,11 @@ var Client     = require('telapi').client;
 
 // A 36 character long AccountSid is always required. It can be described
 // as the username for your account
-var account_sid = 'ACadea151d708d45febbbb5104c98977ca';
+var account_sid = 'ACCOUNT_SID';
 
 // A 34 character long AuthToken is always required. It can be described
 // as your account's password
-var auth_token  = '096353c24f3845678de1f5f5f5a7d694';
+var auth_token  = 'AUTH_TOKEN';
 
 
 // Setup TelAPI Client
