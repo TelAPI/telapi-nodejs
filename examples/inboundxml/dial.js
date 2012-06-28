@@ -2,7 +2,7 @@
 
 /**
  * 
- * Say something with help of InboundXML and TelAPI
+ * Dial with help of InboundXML and TelAPI
  *
  * --------------------------------------------------------------------------------
  * 
@@ -21,12 +21,23 @@ var InboundXML  = require('telapi').inboundxml;
 // Initialize TelAPI response element. This is A MUST!
 var response = new InboundXML.Response();
 
-// Append Say element into response
+// Number to display as calling. (A surcharge will apply when dialing via a custom From number. See pricing page).
+// http://www.telapi.com/pricing
+var from_number = '(XXX) XXX-XXXX';
+
+// Number you wish to dial
+var to_number   = '(XXX) XXX-XXXX';
+
+// Append Dial element into response
 response.append(
-	new InboundXML.Say(
-		'Example usage of TelAPI Node.JS InboundXML helper', 
-		{ voice : 'man' }
+	new InboundXML.Dial( 
+		to_number,
+		{
+			'callerId' : from_number,
+			'action'   : 'http://liveoutput.com/inboundxmldial',
+			'method'   : "POST"
+		}
 	)
 );
 
-util.log("\n\nInboundXML Say Element: \n\n" + response.toString())
+util.log("\n\nInboundXML Dial Element: \n\n" + response.toString())

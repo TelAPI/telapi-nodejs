@@ -2,7 +2,7 @@
 
 /**
  * 
- * Say something with help of InboundXML and TelAPI
+ * Gather with help of InboundXML and TelAPI
  *
  * --------------------------------------------------------------------------------
  * 
@@ -21,12 +21,20 @@ var InboundXML  = require('telapi').inboundxml;
 // Initialize TelAPI response element. This is A MUST!
 var response = new InboundXML.Response();
 
-// Append Say element into response
+
+// Append Dial element into response
 response.append(
-	new InboundXML.Say(
-		'Example usage of TelAPI Node.JS InboundXML helper', 
-		{ voice : 'man' }
+	new InboundXML.Gather( 
+		
+		new InboundXML.Say("Please enter your 4 digit pin", { voice : 'woman' }),
+
+		{
+			action      : 'http://liveoutput.com/gatherexample',
+			method      : "POST",
+			numDigits   : 4,
+			finishOnKey : '#'
+		}
 	)
 );
 
-util.log("\n\nInboundXML Say Element: \n\n" + response.toString())
+util.log("\n\nInboundXML Gather Element: \n\n" + response.toString())

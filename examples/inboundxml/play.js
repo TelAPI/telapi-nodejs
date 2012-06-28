@@ -15,7 +15,7 @@
 
 var util        = require("util"); // For loging purposes :)
 
-// Get inbound he
+// Get TelAPI InboundXML helper
 var InboundXML  = require('telapi').inboundxml;
 
 // Initialize TelAPI response element. This is A MUST!
