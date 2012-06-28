@@ -2,7 +2,7 @@
 
 /**
  * 
- * Say something with helo of InboundXML and TelAPI
+ * Say something with help of InboundXML and TelAPI
  *
  * --------------------------------------------------------------------------------
  * 
