@@ -28,4 +28,4 @@ To install by hand, download the module and run npm installation from local dire
 
 To start, you'll need to obtain a TelAPI account. (http://www.telapi.com). This will give you a TelAPI Account Sid and a TelAPI Auth Token. Using these, you may start using node for complex, awesome telephony applications.
 
-To really get down to business, check out [`the documentation`](http://www.telapi.com/docs/api/) or check out [`examples`](https://github.com/teltechsystems/telapi-nodejs/tree/master/examples)
+To really get down to business, check out [`the documentation`](http://www.telapi.com/docs/api/inboundxml/) or check out [`examples`](https://github.com/teltechsystems/telapi-nodejs/tree/master/examples)
