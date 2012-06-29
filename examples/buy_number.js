@@ -2,7 +2,7 @@
 
 /**
  * 
- * Buy new phone number with TelAPI
+ * Buy a new phone number with TelAPI
  *
  * --------------------------------------------------------------------------------
  * 
@@ -13,15 +13,15 @@
  * @copyright (2012) TelTech Systems, Inc. <info@telapi.com>
  */
 
-var util       = require("util"); // For loging purposes :)
+var util       = require("util"); // For logging purposes :)
 
 var Client     = require('telapi').client;
 
-// A 36 character long AccountSid is always required. It can be described
+// A 36 character long Account Sid is always required. It can be described
 // as the username for your account
 var account_sid = 'ACCOUNT_SID';
 
-// A 34 character long AuthToken is always required. It can be described
+// A 34 character long Auth Token is always required. It can be described
 // as your account's password
 var auth_token  = 'AUTH_TOKEN';
 
@@ -29,7 +29,7 @@ var auth_token  = 'AUTH_TOKEN';
 // Setup TelAPI Client
 var client = new Client(account_sid, auth_token);
 
-// Retrieve 1 available phone number and if successful attempt to purchase number.
+// Retrieve an available phone number, and if successful, attempt to purchase the number.
 client.get(
     'available_phone_numbers', 
     { 
