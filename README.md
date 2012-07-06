@@ -21,11 +21,11 @@ To install via npm:
 To install by hand, download the module and run the npm installation in the local directory
 	
 	$ cd ~
-	$ git clone https://github.com/teltechsystems/telapi-nodejs.git telapi-nodejs
+	$ git clone https://github.com/TelAPI/telapi-nodejs.git telapi-nodejs
     $ npm install ./telapi-nodejs
 
 ## Usage
 
 To start, you'll need to obtain a TelAPI account. (http://www.telapi.com). This will give you a TelAPI Account Sid and a TelAPI Auth Token. Using these, you can start using Node to build awesome telephony apps with TelAPI.
 
-To really get down to business, check out [`the documentation`](http://www.telapi.com/docs) or check out [`examples`](https://github.com/teltechsystems/telapi-nodejs/tree/master/examples)
+To really get down to business, check out [`the documentation`](http://www.telapi.com/docs) or check out [`examples`](https://github.com/TelAPI/telapi-nodejs/tree/master/examples)
