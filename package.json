@@ -4,9 +4,9 @@
     "homepage": "http://www.telapi.com",
     "repository": {
         "type": "git",
-        "url": "https://github.com/teltechsystems/telapi-nodejs.git"
+        "url": "https://github.com/TelAPI/telapi-nodejs.git"
     },
-    "version": "0.1.1",
+    "version": "0.1.2",
     "keywords": [
         "telapi",
         "telephony",
