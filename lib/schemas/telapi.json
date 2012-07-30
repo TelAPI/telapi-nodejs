@@ -316,6 +316,15 @@
                 "create_params": {
                     "friendly_name": "FriendlyName"
                 }
+            },
+            "fraud": {
+                "name": "Fraud",
+                "url": "Fraud",
+                "attributes": [],
+                "parent_resources": [
+                    "accounts"
+                ],
+                "create_params": {}
             }
         },
         "pagination": [
