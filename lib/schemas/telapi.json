@@ -399,6 +399,7 @@
                     "method",
                     "timeout",
                     "finishOnKey",
+                    "maxLength",
                     "transcribe",
                     "transcribeCallback",
                     "playBeep",
@@ -409,6 +410,16 @@
                 "docs_url": "http: //www.telapi.com/docs/api/inboundxml/voice/record/",
                 "blank": true
             },
+            "GetSpeech": {
+                "attributes": [
+                    "grammar", "action", "method", "timeout", "playBeep"
+                ],
+                "nesting": [
+                    "Say", "Play", "Pause"
+                ],
+                "docs_url": "http: //www.telapi.com/docs/api/inboundxml/voice/getspeech/",
+                "blank": false
+            },
             "Dial": {
                 "attributes": [
                     "action",
@@ -418,7 +429,6 @@
                     "timeLimit",
                     "callerId",
                     "hideCallerId",
-                    "callerName",
                     "dialMusic",
                     "callbackUrl",
                     "callbackMethod",
@@ -439,9 +449,7 @@
             },
             "Number": {
                 "attributes": [
-                    "sendDigits",
-                    "method",
-                    "url"
+                    "sendDigits"
                 ],
                 "nesting": [],
                 "docs_url": "http: //www.telapi.com/docs/api/inboundxml/voice/dial/number/",
@@ -453,11 +461,11 @@
                     "beep",
                     "startConferenceOnEnter",
                     "endConferenceOnEnter",
+                    "maxParticipants",
                     "waitUrl",
                     "waitMethod",
                     "hangupOnStar",
                     "callbackUrl",
-                    "method",
                     "waitSound",
                     "waitSoundMethod",
                     "digitsMatch",
