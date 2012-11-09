@@ -145,11 +145,7 @@
                 "parent_resources": [
                     "accounts"
                 ],
-                "create_params": {
-                    "from": "From",
-                    "to": "To",
-                    "url": "Url"
-                }
+                "create_params": { }
             },
             "carrier": {
                 "name": "Carrier",
@@ -225,10 +221,7 @@
                 "parent_resources": [
                     "accounts"
                 ],
-                "create_params": {
-                    "phone_number": "PhoneNumber",
-                    "voice_url": "VoiceUrl"
-                }
+                "create_params": {}
             },
             "available_phone_numbers": {
                 "name": "AvailablePhoneNumber",
