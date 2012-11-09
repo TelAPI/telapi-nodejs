@@ -334,6 +334,15 @@
                     "accounts"
                 ],
                 "create_params": {}
+            },
+            "bna_lookup": {
+                "name": "bna_lookup",
+                "url": "BNA",
+                "attributes": [],
+                "parent_resources": [
+                    "accounts"
+                ],
+                "create_params": {}
             }
         },
         "pagination": [
