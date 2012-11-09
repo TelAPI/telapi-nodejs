@@ -3,3 +3,6 @@
 .git*
 Makefile
 .DS_Store
+*.txt
+nbproject/*
+nbproject/
