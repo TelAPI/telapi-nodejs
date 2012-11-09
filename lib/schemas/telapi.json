@@ -325,6 +325,15 @@
                     "accounts"
                 ],
                 "create_params": {}
+            },
+            "usages": {
+                "name": "Usages",
+                "url": "Usages",
+                "attributes": [],
+                "parent_resources": [
+                    "accounts"
+                ],
+                "create_params": {}
             }
         },
         "pagination": [
