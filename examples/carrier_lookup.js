@@ -2,8 +2,8 @@
 
 /**
  * 
- * 
- * Only US phone numbers are available.
+ * Find out carrier details about particular number
+ * Carrier lookup method supports international lookup!
  * 
  * --------------------------------------------------------------------------------
  * 
