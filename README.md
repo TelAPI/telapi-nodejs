@@ -42,19 +42,20 @@ var client = new Client(
     '********************************'
 );
  
-client.create(
-    'sms_messages':
-    {
-        From : '(XXX) XXX-XXXX',
-        To   : '(XXX) XXX-XXXX',
-        Body : 'SMS message sent from the TelAPI Node.JS helper!'
-    },
-    function(response) {
+var options = {
+    "sms_messages": {
+        "from": "(XXX) XXX-XXXX",
+        "to": "(XXX) XXX-XXXX",
+        "body": "SMS message sent from the TelAPI Node.JS helper!"
+    }
+};
+
+client.create(options, function (response) {
         util.log(
             "SmsMessage SID: " +  response.sid
         );
     },
-    function(error) {
+    function (error) {
         util.log("Error: " + error)
     }
 ); 
