@@ -43,7 +43,7 @@ var client = new Client(
 );
  
 client.create(
-    'sms_messages'
+    'sms_messages':
     {
         From : '(XXX) XXX-XXXX',
         To   : '(XXX) XXX-XXXX',
