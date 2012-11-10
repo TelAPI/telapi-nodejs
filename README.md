@@ -43,7 +43,7 @@ var client = new Client(
 );
  
 var options = {
-    "From": "(XXX) XXX-XXXX",
+    "From": "(XXX) XXX-XXXX", // This should be a number setup through your TelAPI account
     "To": "(XXX) XXX-XXXX",
     "Body": "SMS message sent from the TelAPI Node.JS helper!"
 };
