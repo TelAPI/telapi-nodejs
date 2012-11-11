@@ -38,8 +38,8 @@ var util = require("util");
 var Client = require('telapi').client;
  
 var client = new Client(
-    '********************************', 
-    '********************************'
+    '{AccountSid}', 
+    '{AuthToken}'
 );
  
 var options = {
