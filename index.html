@@ -30,7 +30,7 @@
 
         <p>We've made generating InboundXML with this library as intuitive as possible by defining a simple code design pattern which corresponds to the structure of the XML. The best way to understand this pattern is to take a look at an example:</p>
 
-<pre class="prettyprint lang-php">
+<pre class="prettyprint lang-js">
 var util = require("util");
 
 // Get TelAPI InboundXML helper
@@ -39,16 +39,18 @@ var InboundXML = require('telapi').inboundxml;
 // Initialize TelAPI response element.
 var response = new InboundXML.Response();
 
-util.log(response);
+util.log( response.toString() );
 
-//&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-//&lt;Response&gt;
-//&lt;/Response&gt;
+/*
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Response&gt;
+&lt;/Response&gt;
+*/
 </pre>
 
         <p>First and foremost, you need to instantiate a new InboundXML object. This assignment alone begins the process of generating the xml. As shown above, if we log $inbound_xml, the start of the base elements required for an InboundXML document are output.</p>
 
-<pre class="prettyprint lang-php">
+<pre class="prettyprint lang-js">
 var util = require("util");
  
 // Get TelAPI InboundXML helper
@@ -61,17 +63,19 @@ response.append(
     new InboundXML.Record()
 );
  
-util.log( response );
+util.log( response.toString() );
 
-//&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-//&lt;Response&gt;
-//  &lt;Record/&gt;
-//&lt;/Response&gt;
+/*
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Response&gt;
+  &lt;Record/&gt;
+&lt;/Response&gt;
+*/
 </pre>
 
 <p>Creating elements is super easy. Simply append the InboundXML response object with other elements, creating them in the same way the response object was initially instantiated.</p>
 
-<pre class="prettyprint lang-php">
+<pre class="prettyprint lang-js">
 var util = require("util");
  
 // Get TelAPI InboundXML helper
@@ -93,7 +97,7 @@ response.append(
     )
 );
  
-util.log( response );
+util.log( response.toString() );
 
 /*
 &lt;?xml version="1.0"?&gt;
@@ -108,16 +112,27 @@ util.log( response );
 
 <p>When appending new elements to a response, they can take two parameters: the first (or only) may be a string of text. If no string parameter is provided, the element will output an empty-element tag, which is what is desired in the case of record. The second parameter (or only) parameter may be an object containing key value pairs to be used as element attributes. The example above demonstrates both of these patterns.</p>
 
-<pre class="prettyprint lang-php">
-$inbound_xml = new TelApi_InboundXML();
+<pre class="prettyprint lang-js">
+var util = require("util");
+ 
+// Get TelAPI InboundXML helper
+var InboundXML = require('telapi').inboundxml;
+ 
+// Initialize TelAPI response element. 
+var response = new InboundXML.Response();
+ 
+response.append(
+    new InboundXML.Record(
+        {action: 'http://example.com'}
+        )
+);
 
-$inbound_xml->record(array('action'=>'http://foo-url.com/'));
-
-$inbound_xml->say('hello!', array('voice'=>'man'));
-
-$inbound_xml->dial()->conference('ConfRoom');
-
-echo $inbound_xml;
+response.append(
+    new InboundXML.Say(
+        'This call will be recorded',
+        {voice: 'woman'}
+    )
+);
 
 response.append(
     new InboundXML.Dial(
@@ -126,6 +141,8 @@ response.append(
         )
     )
 );
+ 
+util.log( response.toString() );
 
 /*
 &lt;?xml version="1.0"?&gt;
