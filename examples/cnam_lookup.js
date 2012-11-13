@@ -3,7 +3,7 @@
 /**
  * 
  * 
- * Only US phone numbers are available.
+ * Only US phone numbers can have CNAM lookups performed on them.
  * 
  * --------------------------------------------------------------------------------
  * 

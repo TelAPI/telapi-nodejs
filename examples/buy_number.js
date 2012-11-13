@@ -38,9 +38,8 @@ client.get(
 
             util.log("Available Phone Number: " + phone_number);
 
-            // Now what we need to do is to insert new phone number to account incoming phone numbers
-            // Remember that this will cost you depending on phone number type.
-            // Amount will be deducted from your balance.
+            // Now what we need to is add the available number to our account using /IncomingPhoneNumbers
+            // Remember that the price depends on the phone number type & location.
             client.create(
                 'incoming_phone_numbers',
                 { 'PhoneNumber' : phone_number },

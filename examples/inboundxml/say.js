@@ -2,7 +2,7 @@
 
 /**
  * 
- * Say something with help of InboundXML and TelAPI
+ * Text to speech using InboundXML and TelAPI
  *
  * --------------------------------------------------------------------------------
  * 
