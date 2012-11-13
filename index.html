@@ -1,74 +1,2339 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Telapi-nodejs : TelAPI NodeJS Library" />
+    <title>TelAPI-Node.js Reference</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link href="stylesheets/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="javascripts/prettify.js"></script>
 
-    <title>Telapi-nodejs</title>
   </head>
+  <body onload="prettyPrint()">
 
-  <body>
+<div class="topbar">
+<div class="container">
+<a href="http://www.telapi.com" class="brand">TelAPI</a>
+</div>
+</div>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/TelAPI/telapi-nodejs">View on GitHub</a>
+<div class="container">
+<div class="hero-unit">
+<h1>TelAPI-Node.js Reference</h1>
+</div>
+</div>
 
-          <h1 id="project_title">Telapi-nodejs</h1>
-          <h2 id="project_tagline">TelAPI NodeJS Library</h2>
+    <div class="container">
+        <div class="row">
+        <div class="span-two-thirds">
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/TelAPI/telapi-nodejs/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/TelAPI/telapi-nodejs/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+        <h1 id="inboundxml">InboundXML</h1>
+
+        <p>We've made generating InboundXML with this library as intuitive as possible by defining a simple code design pattern which corresponds to the structure of the XML. The best way to understand this pattern is to take a look at an example:</p>
+
+<pre class="prettyprint lang-php">
+var util = require("util");
+
+// Get TelAPI InboundXML helper
+var InboundXML = require('telapi').inboundxml;
+
+// Initialize TelAPI response element.
+var response = new InboundXML.Response();
+
+util.log(response);
+
+//&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+//&lt;Response&gt;
+//&lt;/Response&gt;
+</pre>
+
+        <p>First and foremost, you need to instantiate a new InboundXML object. This assignment alone begins the process of generating the xml. As shown above, if we log $inbound_xml, the start of the base elements required for an InboundXML document are output.</p>
+
+<pre class="prettyprint lang-php">
+var util = require("util");
+ 
+// Get TelAPI InboundXML helper
+var InboundXML = require('telapi').inboundxml;
+ 
+// Initialize TelAPI response element. 
+var response = new InboundXML.Response();
+ 
+response.append(
+    new InboundXML.Record()
+);
+ 
+util.log( response );
+
+//&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+//&lt;Response&gt;
+//  &lt;Record/&gt;
+//&lt;/Response&gt;
+</pre>
+
+<p>Creating elements is super easy. Simply append the InboundXML response object with other elements, creating them in the same way the response object was initially instantiated.</p>
+
+<pre class="prettyprint lang-php">
+var util = require("util");
+ 
+// Get TelAPI InboundXML helper
+var InboundXML = require('telapi').inboundxml;
+ 
+// Initialize TelAPI response element. 
+var response = new InboundXML.Response();
+ 
+response.append(
+    new InboundXML.Record(
+        {action: 'http://example.com'}
+        )
+);
+
+response.append(
+    new InboundXML.Say(
+        'This call will be recorded',
+        {voice: 'woman'}
+    )
+);
+ 
+util.log( response );
+
+/*
+&lt;?xml version="1.0"?&gt;
+&lt;Response&gt;
+  &lt;Record action="http://example.com/"&gt;
+  &lt;Say voice="man"&gt;
+    This call will be recorded
+  &lt;/Say&gt;
+&lt;/Response&gt;
+*/
+</pre>
+
+<p>When appending new elements to a response, they can take two parameters: the first (or only) may be a string of text. If no string parameter is provided, the element will output an empty-element tag, which is what is desired in the case of record. The second parameter (or only) parameter may be an object containing key value pairs to be used as element attributes. The example above demonstrates both of these patterns.</p>
+
+<pre class="prettyprint lang-php">
+$inbound_xml = new TelApi_InboundXML();
+
+$inbound_xml->record(array('action'=>'http://foo-url.com/'));
+
+$inbound_xml->say('hello!', array('voice'=>'man'));
+
+$inbound_xml->dial()->conference('ConfRoom');
+
+echo $inbound_xml;
+
+response.append(
+    new InboundXML.Dial(
+        new InboundXML.Conference(
+            'ConfRoom'
+        )
+    )
+);
+
+/*
+&lt;?xml version="1.0"?&gt;
+&lt;Response&gt;
+&lt;Record action="http://example.com/"&gt;
+&lt;Say voice="man"&gt;hello!&lt;/Say&gt;
+&lt;Dial&gt;&lt;Conference&gt;ConfRoom&lt;/Conference>&lt;/Dial&gt;
+&lt;/Response&gt;
+*/
+</pre>
+
+<p>The last design pattern to be aware of is used for nesting elements. To nest an element within another, just instantiate the nested element within the parent element when appending to the response. This is demonstrated by the code above which outputs a conference element nested within a dial.</p>
+        
+        <hr><h1 id="rest-api">REST API</h1>
+
+        <P>Before using any of the TelAPI REST methods available, you must authenticate your account. Do so by including your REST API credentials in the following way:</p>
+
+<pre class="prettyprint lang-js">
+var util = require("util"); // used to to print responses 
+var Client = require('telapi').client;
+ 
+var client = new Client(
+    '{AccountSid}', 
+    '{AuthToken}'
+);
+</pre> 
+
+<p>Notice the code above instantiates and assigns a client object. Every method used throughout this helper library will use this main client class.</p>
+
+<h4>Query Methods</h4>
+
+<p>The four main query <a href="https://github.com/TelAPI/telapi-nodejs/blob/master/lib/client.js#L105">methods</a> used to make REST requests to TelAPI are:</p>
+
+<pre class="prettyprint lang-js">
+client.get()          // used to view or list resources
+
+client.create()     // used to create resources (make call, send sms, etc.)
+
+client.update()   // used to update resources
+
+client.delete() // used to delete resources
+</pre>
+
+<p>Proper usage of these methods is shown in the examples throughout the rest of this documentation. In addition to those main four, there are also three helper methods provided for querying additional information about the API:</p>
+
+<pre class="prettyprint lang-js">
+client.getResource()               // used to get details about resources
+
+client.resourceExists()          // used to check whether resource exists
+
+client.getAvailableResources() // used to retreive all available REST resource endpoints
+</pre>
+
+<h5>Helper Method Usage:</h5>
+
+<pre class="prettyprint lang-js">
+var util = require("util");
+var Client = require('telapi').client;
+ 
+var client = new Client(
+    '{AccountSid}',
+    '{AuthToken}'
+);
+
+util.log(client.getAvailableResources()); // list all resources
+
+util.log(JSON.stringify(client.getResource('accounts'))); // this resource exists
+
+util.log(client.resourceExists('unicorns')); // this resource does not exist
+</pre>
+
+
+        <hr><h2 id="accounts">Accounts</h2>
+
+        <h4 style="display:inline;">View Account</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/accounts/view/">Documentation</a><br>
+
+        <p>Once you've authenticated as shown above, request and print an account resource like so:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'account',
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{AccountSid}",
+  "friendly_name": "name@email.com",
+  "status": "active",
+  "account_balance": "23.000000",
+  "date_created": "Wed, 14 Mar 2012 16:47:29 +0000",
+  "date_updated": "Fri, 9 Nov 2012 14:25:12 +0000",
+  "uri": "/v1/Accounts/{AccountSid}.json",
+  "max_outbound_limit": "0.400000",
+  "type": "Full",
+  "time_zone": "EST",
+  "subresource_uris": {
+    "available_phone_numbers": "/v1/Accounts/{AccountSid}/AvailablePhoneNumbers.json",
+    "calls": "/v1/Accounts/{AccountSid}/Calls.json",
+    "conferences": "/v1/Accounts/{AccountSid}/Conferences.json",
+    "incoming_phone_numbers": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers.json",
+    "notifications": "/v1/Accounts/{AccountSid}/Notifications.json",
+    "recordings": "/v1/Accounts/{AccountSid}/Recordings.json",
+    "sms_messages": "/v1/Accounts/{AccountSid}/SMS/Messages.json",
+    "transcriptions": "/v1/Accounts/{AccountSid}/Transcriptions.json",
+    "transactions": "/v1/Accounts/{AccountSid}/Transactions.json",
+    "applications": "/v1/Accounts/{AccountSid}/Applications.json",
+    "fraud": "/v1/Accounts/{AccountSid}/Fraud.json",
+    "cnam": "/v1/Accounts/{AccountSid}/CNAM.json",
+    "carrier": "/v1/Accounts/{AccountSid}/Carrier.json",
+    "usages": "/v1/Accounts/{AccountSid}/Usages.json"
+  }
+}
+</pre>
+
+<p>Then simply use dot notation to access individual resource properties:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'account',
+    null,
+    function(response) {
+        util.log( response.status + ', ' + response.account_balance );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+
+        <h4 style="display:inline;">View Usage</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/accounts/view-usage/">Documentation</a><br>
+
+
+        <p>When requesting a single resource, the first parameter of the get must be a list to specify a sid:</p>
+
+
+<pre class="prettyprint lang-js">
+client.get(
+    ['usages', '{UsageSid}'],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);                  
+</pre>
+
+      <p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{UsageSid}",
+  "product": "Inbound Call",
+  "day": "27",
+  "month": "9",
+  "year": "2012",
+  "quantity": "2",
+  "average_cost": "0.010000",
+  "total_cost": "0.020000",
+  "uri": "/v1/Accounts/{AccountSid}/Usages/{UsageSid}.json"
+}
+</pre>
+
+<p>Then simply use dot notation to access individual resource properties:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    ['usages', '{UsageSid}'],
+    null,
+    function(response) {
+        util.log( response.quantity );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+); 
+</pre> 
+
+        <h4 style="display:inline;">List Usages</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/accounts/list-usages/">Documentation</a><br>
+
+
+        <p>Request usages list resource filtering for usage only occurring in 2012:</p>
+
+
+<pre class="prettyprint lang-js">
+client.get(
+    'usages',
+    {Year: '2012'},
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);               
+</pre>
+
+      <p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 1,
+  "page_size": 5,
+  "total": 2,
+  "start": 0,
+  "end": 2,
+  "uri": "/v1/Accounts/{AccountSid}/Usages.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/Usages.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": null,
+  "last_page_uri": "/v1/Accounts/{AccountSid}/Usages.json?Page=0&amp;PageSize=50",
+  "usages": [
+    {
+      "sid": "{UsageSid}",
+      "product": "Inbound Call",
+      "day": "27",
+      "month": "9",
+      "year": "2012",
+      "quantity": "2",
+      "average_cost": "0.010000",
+      "total_cost": "0.020000",
+      "uri": "/v1/Accounts/{AccountSid}/Usages/{UsageSid}.json"
+    },
+    {
+      "sid": "{UsageSid}",
+      "product": "Recurring Inbound Channel",
+      "day": "1",
+      "month": "10",
+      "year": "2012",
+      "quantity": "1",
+      "average_cost": "27.000000",
+      "total_cost": "27.000000",
+      "uri": "/v1/Accounts/{AccountSid}/Usages/{UsageSid}.json"
+    }
+  ]
+}
+</pre>
+
+<p>Iterate over list resources like so:</p>
+
+<pre class="prettyprint lang-js">
+function(response) {
+    for ( var usage in response.usages ) {
+        util.log(
+            "Usage SID: " + response.usages[usage].sid
+        );
+    }
+}
+</pre> 
+
+            <hr><h2 id="sms">SMS</h2>
+
+        <h4 style="display:inline;">View SMS Message</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/sms/view/">Documentation</a><br>
+
+        <p>When requesting a single resource, the first parameter of the get method must be a list to specify a sid:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    ['sms_messages', '{SmsMessageSid}'],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response));
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "api_version": "v1",
+  "sid": "{SmsMessageSid}",
+  "account_sid": "{AccountSid}",
+  "date_created": "Mon, 5 Nov 2012 21:30:36 +0000",
+  "date_updated": "Mon, 5 Nov 2012 21:30:36 +0000",
+  "date_sent": "Mon, 5 Nov 2012 21:30:36 +0000",
+  "to": "+17325551234",
+  "from": "+17321019292",
+  "body": "Hey, this is an SMS",
+  "status": "sent",
+  "direction": "inbound",
+  "price": "0.010000",
+  "uri": "/v1/Accounts/{AccountSid}/SMS/Messages/{SmsMessageSid}.json"
+}
+</pre>
+
+<p>Then simply use dot notation to access individual resource properties:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    ['sms_messages', '{SmsMessageSid}'],
+    null,
+    function(response) {
+        util.log( response.body );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<h4 style="display:inline;">List SMS Messages</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/sms/list/">Documentation</a><br>
+
+        <p>Print SMS list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'sms_messages',
+    null,
+    function(response) {
+        util.log( JSON.stringify(response));
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 14,
+  "page_size": 50,
+  "total": 722,
+  "start": 0,
+  "end": 49,
+  "uri": "/v1/Accounts/{AccountSid}/SMS/Messages.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/SMS/Messages.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/SMS/Messages.json?Page=1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/SMS/Messages.json?Page=13&amp;PageSize=50",
+  "sms_messages": [
+    {
+      "api_version": "v1",
+      "sid": "SM833a202a2e814d53830469138b47d476",
+      "account_sid": "{AccountSid}",
+      "date_created": "Mon, 5 Nov 2012 21:33:09 +0000",
+      "date_updated": "Mon, 5 Nov 2012 21:33:09 +0000",
+      "date_sent": "Mon, 5 Nov 2012 21:33:08 +0000",
+      "to": "+12015551245",
+      "from": "+17325551234",
+      "body": "Hi!",
+      "status": "sent",
+      "direction": "inbound",
+      "price": "0.010000",
+      "uri": "/v1/Accounts/{AccountSid}/SMS/Messages/{SmsMessageSid}.json"
+    },
+    {
+      "api_version": "v1",
+      "sid": "{SmsMessageSid}",
+      "account_sid": "{AccountSid}",
+      "date_created": "Mon, 5 Nov 2012 21:30:36 +0000",
+      "date_updated": "Mon, 5 Nov 2012 21:30:36 +0000",
+      "date_sent": "Mon, 5 Nov 2012 21:30:36 +0000",
+      "to": "+17325551234",
+      "from": "+17321019292",
+      "body": "Hey, this is an SMS",
+      "status": "sent",
+      "direction": "inbound",
+      "price": "0.010000",
+      "uri": "/v1/Accounts/{AccountSid}/SMS/Messages/{SmsMessageSid}.json"
+    }
+  ]
+}
+</pre>
+
+<p>Iterate over list resources like so:</p>
+
+<pre class="prettyprint lang-js">
+function(response) {
+
+    for ( var smsmessage in response.sms_messages ) {
+        util.log(
+            "SmsMessage SID: " + 
+            response.sms_messages[smsmessage].sid
+        );
+    }
+
+}
+</pre> 
+
+<h4 style="display:inline;">Send SMS Message</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/sms/send/">Documentation</a><br>
+
+        <p>Use the create method along with a set of parameters to send an SMS message:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    'sms_messages',
+    {
+        From : '4085551234',
+        To   : '7325551234',
+        Body : 'This SMS was send for the TelAPI node.js helper library!'
+    },
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "api_version": "v1",
+  "sid": "{SmsMessageSid}",
+  "account_sid": "{AccountSid}",
+  "date_created": "Fri, 9 Nov 2012 17:56:07 +0000",
+  "date_updated": "Fri, 9 Nov 2012 17:56:07 +0000",
+  "date_sent": "Fri, 9 Nov 2012 17:56:07 +0000",
+  "to": "+17325551234",
+  "from": "+14085551234",
+  "body": "This SMS was send for the TelAPI node.js helper library!",
+  "status": "sent",
+  "direction": "outbound-api",
+  "price": "0.0700000",
+  "uri": "/v1/Accounts/{AccountSid}/SMS/Messages/{SmsMessageSid}.json"
+}
+</pre>
+
+<hr><h2 id="calls">Calls</h2>
+
+        <h4 style="display:inline;">View Call</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/view/">Documentation</a><br>
+
+        <p>When requesting a single resource, the first parameter of the get method must be a list to specify a sid:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'calls', '{CallSid}' ],
+    null,
+    function(response) {
+      util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{CallSid}",
+  "date_created": "Tue, 6 Nov 2012 20:02:38 +0000",
+  "date_updated": "Tue, 6 Nov 2012 20:04:57 +0000",
+  "parent_call_sid": "",
+  "account_sid": "{AccountSid}",
+  "to": "+14081015555",
+  "from": "+1735551234",
+  "phone_number_sid": "",
+  "status": "completed",
+  "start_time": "Tue, 6 Nov 2012 20:02:49 +0000",
+  "end_time": "Tue, 6 Nov 2012 20:04:57 +0000",
+  "duration": "128",
+  "price": "0.076000",
+  "direction": "outbound-api",
+  "answered_by": "None",
+  "api_version": "v1",
+  "forwarded_from": "",
+  "caller_id_blocked": "false",
+  "uri": "/v1/Accounts/{AccountSid}/Calls/{CallSid}.json",
+  "subresource_uris": {
+    "notifications": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Notifications.json",
+    "recordings": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json"
+  }
+}
+</pre>
+
+<p>Then simply use dot notation to access individual resource properties:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'calls', '{CallSid}' ],
+    null,
+    function(response) {
+      util.log( response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+
+        <h4 style="display:inline;">List Calls</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/list/">Documentation</a><br>
+
+        <p>Request a call list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'calls',
+    null,
+    function(response) {
+      util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 14,
+  "page_size": 50,
+  "total": 722,
+  "start": 0,
+  "end": 49,
+  "uri": "/v1/Accounts/{AccountSid}/Calls.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/Calls.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/Calls.json?Page=1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/Calls.json?Page=13&amp;PageSize=50",
+  "sms_messages": [
+    {
+      "sid": "{CallSid}",
+      "date_created": "Tue, 6 Nov 2012 20:02:38 +0000",
+      "date_updated": "Tue, 6 Nov 2012 20:04:57 +0000",
+      "parent_call_sid": "",
+      "account_sid": "{AccountSid}",
+      "to": "+14081015555",
+      "from": "+1735551234",
+      "phone_number_sid": "",
+      "status": "completed",
+      "start_time": "Tue, 6 Nov 2012 20:02:49 +0000",
+      "end_time": "Tue, 6 Nov 2012 20:04:57 +0000",
+      "duration": "128",
+      "price": "0.076000",
+      "direction": "outbound-api",
+      "answered_by": "None",
+      "api_version": "v1",
+      "forwarded_from": "",
+      "caller_id_blocked": "false",
+      "uri": "/v1/Accounts/{AccountSid}/Calls/{CallSid}.json",
+      "subresource_uris": {
+        "notifications": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Notifications.json",
+        "recordings": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json"
+      }
+    },
+    {
+      "sid": "{CallSid}",
+      "date_created": "Tue, 6 Nov 2012 22:02:38 +0000",
+      "date_updated": "Tue, 6 Nov 2012 22:04:57 +0000",
+      "parent_call_sid": "",
+      "account_sid": "{AccountSid}",
+      "to": "+14081015555",
+      "from": "+1000551234",
+      "phone_number_sid": "",
+      "status": "completed",
+      "start_time": "Tue, 6 Nov 2012 20:02:49 +0000",
+      "end_time": "Tue, 6 Nov 2012 20:04:57 +0000",
+      "duration": "60",
+      "price": "0.076000",
+      "direction": "outbound-api",
+      "answered_by": "None",
+      "api_version": "v1",
+      "forwarded_from": "",
+      "caller_id_blocked": "false",
+      "uri": "/v1/Accounts/{AccountSid}/Calls/{CallSid}.json",
+      "subresource_uris": {
+        "notifications": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Notifications.json",
+        "recordings": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json"
+      }
+    }
+  ]
+}
+</pre>
+
+<p>Iterate over list resources like so:</p>
+
+<pre class="prettyprint lang-js">
+function(response) {
+    for(var call in response.calls) {
+        util.log( "Call SID: " + response.calls[call].sid );
+    }
+}
+</pre> 
+
+
+<h4 style="display:inline;">Make Call</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/make/">Documentation</a><br>
+
+        <p>Use the create method along with a set of parameters to make a call:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    'calls',
+    {
+        From : '7325551423',
+        To   : '1015551234',
+        Url  : 'https://www.foo.com/inbound.xml'
+    },
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>Example log output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{CallSid}",
+  "date_created": "Fri, 09 nov 2012 18:55:38 0",
+  "date_updated>": "Fri, 09 nov 2012 18:55:38 0",
+  "parent_call_sid": null,
+  "account_sid": "{AccountSid}",
+  "to": "+11015551234",
+  "from": "+17325551423",
+  "phone_number_sid": "",
+  "status": "inprogress",
+  "start_time": "Tue, 6 Nov 2012 20:02:49 +0000",
+  "end_time": "Tue, 6 Nov 2012 20:04:57 +0000",
+  "duration": "128",
+  "price": "0.076000",
+  "direction": "outbound-api",
+  "answered_by": null,
+  "api_version>": "v1",
+  "forwarded_from": null,
+  "caller_name": null,
+  "uri": "/v1/Accounts/{AccountSid}/Calls/{CallSid}.json",
+  "subresource_uris": {
+    "notifications": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Notifications.json",
+    "recordings": "/v1/Accounts/{AccountSid}/Calls/{CallSid}/Recordings.json"
+  }
+}
+</pre>
+
+<h4 style="display:inline;">Interrupt Call</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/interrupt/">Documentation</a><br>
+
+        <p>Use the update method to interrupt a call by redirecting it to a new xml document:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'calls', '{CallSid}' ],
+    {
+        Url  : 'http://foo.com/redirect.xml'
+    },
+    function(response) {
+        util.log( "Call SID: " + response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Hangup Call</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/hangup/">Documentation</a><br>
+
+        <p>Use the update method with Status set to completed to hangup a call:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'calls', '{CallSid}' ],
+    {
+        Status  : 'completed'
+    },
+    function(response) {
+        util.log( "Call SID: " + response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Send Digits to Call</h4>
+ <a href="http://www.telapi.com/docs/api/rest/calls/send-digits/">Documentation</a><br>
+
+         <p>Use the update method to send digits to a call:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'calls', '{CallSid}' ],
+    {
+        PlayDtmf : '1234'
+    },
+    function(response) {
+        util.log( "Call SID: " + response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Play Audio to Call</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/play-audio/">Documentation</a><br>
+
+        <p>To play audio to a call, use the update method:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'calls', '{CallSid}', 'Play' ],
+    {
+        AudioUrl : 'http://www.foo.com/sample.mp3'
+    },
+    function(response) {
+        util.log( "Call SID: " + response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Call Voice Effects</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/voice-effects/">Documentation</a><br>
+
+        <p>To adjust call voice effects, use the update method:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'calls', '{CallSid}', 'Effect' ],
+    {
+        Pitch : '1'
+    },
+    function(response) {
+        util.log( "Call SID: " + response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Record Call</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/calls/record/">Documentation</a><br>
+
+        <p>To record a call, use the update method:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'calls', '{CallSid}', 'Recordings' ],
+    {
+        Record : 'true',
+        CallbackUrl: 'http://liveoutput.com/XKcCZvWb'
+    },
+    function(response) {
+        util.log( "Call SID: " + response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+
+<hr><h2 id="conferences">Conferences</h2>
+
+<h4 style="display:inline;">View Conference</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/conferences/view/">Documentation</a><br>
+
+        <p>Request and print a conference resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'conferences', '{ConferenceSId}' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error);
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{ConferenceSid}",
+  "friendly_name": "exampleConference",
+  "account_sid": "{AccountSid}",
+  "participant_count": "0",
+  "run_time": "0",
+  "status": "in-progress",
+  "uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}.json",
+  "date_created": "Fri, 26 Oct 2012 19:07:50 +0000",
+  "date_updated": "Fri, 26 Oct 2012 19:58:03 +0000",
+  "subresource_uris": {
+    "participants": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json"
+  }
+}
+</pre>
+
+<h4 style="display:inline;">List Conferences</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/conferences/list/">Documentation</a><br>
+
+        <p>Request and print a conferences list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'conferences',
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error);
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 0,
+  "page_size": 5,
+  "total": 2,
+  "start": 0,
+  "end": 2,
+  "uri": "/v1/Accounts/{AccountSid}/Conferences.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/Conferences.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/Conferences.json?Page=-1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/Conferences.json?Page=-1&amp;PageSize=50",
+  "conferences": [
+    {
+      "sid": "{ConferenceSid}",
+      "friendly_name": "exampleConference",
+      "account_sid": "{AccountSid}",
+      "participant_count": "0",
+      "run_time": "0",
+      "status": "in-progress",
+      "uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}.json",
+      "date_created": "Fri, 26 Oct 2012 19:07:50 +0000",
+      "date_updated": "Fri, 26 Oct 2012 19:58:03 +0000",
+      "subresource_uris": {
+        "participants": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json"
+      }
+    },
+    {
+      "sid": "{ConferenceSid}",
+      "friendly_name": "conference-name",
+      "account_sid": "{AccountSid}",
+      "participant_count": "0",
+      "run_time": "0",
+      "status": "completed",
+      "uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}.json",
+      "date_created": "Fri, 26 Oct 2012 16:18:02 +0000",
+      "date_updated": "Fri, 26 Oct 2012 16:21:37 +0000",
+      "subresource_uris": {
+        "participants": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json"
+      }
+    }
+  ]
+}
+</pre>
+
+<h4 style="display:inline;">View Participant</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/conferences/view-participant/">Documentation</a><br>
+
+        <p>Request a participant resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'conferences', '{ConferenceSid}', 'Participants', {ParticipantCallSid} ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "call_sid": "{CallSid}",
+  "conference_sid": "{ConferenceSid}",
+  "account_sid": "{AccountSid}",
+  "muted": "false",
+  "deaf": "false",
+  "caller_name": "LAKEWOOD, NJ",
+  "caller_number": "7325551234",
+  "duration": "36",
+  "uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants/{CallSid}",
+  "date_created": "Fri, 9 Nov 2012 21:21:46 +0000",
+  "date_updated": "Fri, 9 Nov 2012 21:21:47 +0000"
+}
+</pre>
+
+<h4 style="display:inline;">List Participants</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/conferences/list-participants/">Documentation</a><br>
+
+        <p>Request a participant list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'conferences', '{ConferenceSid}', 'Participants' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 0,
+  "page_size": 50,
+  "total": 2,
+  "start": 0,
+  "end": 2,
+  "uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json?Page=-1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json?Page=-1&amp;PageSize=50",
+  "conferences": [
+    {
+      "call_sid": "{CallSid}",
+      "conference_sid": "{ConferenceSid}",
+      "account_sid": "{AccountSid}",
+      "muted": "false",
+      "deaf": "false",
+      "caller_name": "LAKEWOOD, NJ",
+      "caller_number": "7325551234",
+      "duration": "36",
+      "uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants/{CallSid}",
+      "date_created": "Fri, 9 Nov 2012 21:21:46 +0000",
+      "date_updated": "Fri, 9 Nov 2012 21:21:47 +0000"
+    },
+    {
+      "call_sid": "{CallSid}",
+      "conference_sid": "{ConferenceSid}",
+      "account_sid": "{AccountSid}",
+      "muted": "false",
+      "deaf": "false",
+      "caller_name": "TRENTON, NJ",
+      "caller_number": "7325551010",
+      "duration": "52",
+      "uri": "/v1/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants/{CallSid}",
+      "date_created": "Fri, 9 Nov 2012 21:22:10 +0000",
+      "date_updated": "Fri, 9 Nov 2012 21:22:10 +0000"
+    }
+  ]
+}
+</pre>
+
+<h4 style="display:inline;">Deaf or Mute Participant</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/conferences/deaf-or-mute/">Documentation</a><br>
+
+        <p>Use the update method to deaf or mute participants:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'conferences', '{ConferenceSid}', 'Participants', '{CallSid}' ],
+    { Muted : 'true'},
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Hangup Participant</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/conferences/hangup-participant/">Documentation</a><br>
+
+        <p>Use the delete method to hangup a conference participant:</p>
+
+<pre class="prettyprint lang-js">
+client.delete(
+    [ 'conferences', '{ConferenceSid}', 'Participants', '{CallSid}' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error);
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Play Audio to Participant</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/conferences/play-audio/">Documentation</a><br>
+
+        <p>Use the update method to play audio to a participant:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'conferences', '{ConferenceSid}', 'Participants', '{ParticipantCallSid}}' ],
+    {AudioUrl:'http://foo.com/file.mp3'},
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error);
+    }
+);
+</pre>
+
+<hr><h2 id="applications">Applications</h2>   
+
+<h4 style="display:inline;">View Application</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/applications/view/">Documentation</a><br>
+
+        <p>Request and print an application resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'applications', '{ApplicationSid}' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{Applicationsid}",
+  "date_created": "Mon, 5 Nov 2012 18:30:57 +0000",
+  "date_updated": "Mon, 5 Nov 2012 18:30:57 +0000",
+  "account_sid": "{AccountSid}",
+  "friendly_name": "Welcome Application",
+  "api_version": "v1",
+  "voice_url": "http://telapi.com/ivr/welcome/call",
+  "voice_method": "POST",
+  "voice_fallback_url": "",
+  "voice_fallback_method": "POST",
+  "heartbeat_url": "",
+  "heartbeat_method": "POST",
+  "hangup_callback": "",
+  "hangup_callback_method": "POST",
+  "voice_caller_id_lookup": "False",
+  "sms_url": "",
+  "sms_method": "POST",
+  "sms_fallback_url": "",
+  "sms_fallback_method": "POST",
+  "uri": "/v1/Accounts/{AccountSid}/Applications/{Applicationsid}.json"
+}
+</pre>
+
+<h4 style="display:inline;">List Application</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/applications/list/">Documentation</a><br>
+
+        <p>Request and print an application list resource:</p>
+
+<pre class="prettyprint lang-js">
+applications = account.applications
+client.get(
+    [ 'applications' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 0,
+  "page_size": 50,
+  "total": 2,
+  "start": 0,
+  "end": 2,
+  "uri": "/v1/Accounts/{AccountSid}/Applications/{Applicationsid}.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/Applications/{Applicationsid}.json.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/Applications/{Applicationsid}.json.json?Page=-1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/Applications/{Applicationsid}.json.json?Page=-1&amp;PageSize=50",
+  "conferences": [
+    {
+      "sid": "{Applicationsid}",
+      "date_created": "Mon, 5 Nov 2012 18:30:57 +0000",
+      "date_updated": "Mon, 5 Nov 2012 18:30:57 +0000",
+      "account_sid": "{AccountSid}",
+      "friendly_name": "Welcome Application",
+      "api_version": "v1",
+      "voice_url": "http://telapi.com/ivr/welcome/call",
+      "voice_method": "POST",
+      "voice_fallback_url": "",
+      "voice_fallback_method": "POST",
+      "heartbeat_url": "",
+      "heartbeat_method": "POST",
+      "hangup_callback": "",
+      "hangup_callback_method": "POST",
+      "voice_caller_id_lookup": "False",
+      "sms_url": "",
+      "sms_method": "POST",
+      "sms_fallback_url": "",
+      "sms_fallback_method": "POST",
+      "uri": "/v1/Accounts/{AccountSid}/Applications/{Applicationsid}.json"
+    },
+    {
+      "sid": "{Applicationsid}",
+      "date_created": "Mon, 4 Nov 2012 12:11:27 +0000",
+      "date_updated": "Mon, 4 Nov 2012 12:11:27 +0000",
+      "account_sid": "{AccountSid}",
+      "friendly_name": "Awesome Application",
+      "api_version": "v1",
+      "voice_url": "http://foo.com/awesome",
+      "voice_method": "POST",
+      "voice_fallback_url": "",
+      "voice_fallback_method": "POST",
+      "heartbeat_url": "",
+      "heartbeat_method": "POST",
+      "hangup_callback": "",
+      "hangup_callback_method": "POST",
+      "voice_caller_id_lookup": "False",
+      "sms_url": "",
+      "sms_method": "POST",
+      "sms_fallback_url": "",
+      "sms_fallback_method": "POST",
+      "uri": "/v1/Accounts/{AccountSid}/Applications/{Applicationsid}.json"
+    }
+  ]
+}
+</pre>
+
+<h4 style="display:inline;">Create Application</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/applications/create/">Documentation</a><br>
+
+        <p>Use the create method to make an application:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    [ 'applications' ],
+    {
+        FriendlyName : "Node.js Application",
+        VoiceUrl     : "http://telapi.com/ivr/welcome/call",
+        SmsUrl       : "http://telapi.com/ivr/welcome/sms"
+    },
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<h4 style="display:inline;">Update Application</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/applications/update/">Documentation</a><br>
+
+        <p>Fetch an application update its FriendlyName:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'applications', '{ApplicationSid' ],
+    {
+        FriendlyName : "Super Node.js Application"
+    },
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Delete Application</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/applications/delete/">Documentation</a><br>
+
+        <p>Use the delete method to delete an application:</p>
+
+<pre class="prettyprint lang-js">
+client.delete(
+    [ 'applications', '{ApplicationSid}' ],
+    null,
+    function(response) {
+        util.log( 
+            "response.friendlyname + " has successfully been deleted." 
+        );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<hr><h2 id="ipn">Incoming Phone Numbers</h2>   
+
+<h4 style="display:inline;">View Incoming Phone Number</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/incoming-phone-numbers/view/">Documentation</a><br>
+
+        <p>Request and print an incoming phone number resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'incoming_phone_numbers', '{IncomingNumberSid}' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{IncomingNumberSid}",
+  "account_sid": "{AccountSid}",
+  "friendly_name": "electric-ivr",
+  "phone_number": "+12165551332",
+  "type": "local",
+  "voice_application_sid": "",
+  "voice_url": "https://www.telapi.com/data/inboundxml/",
+  "voice_method": "GET",
+  "voice_fallback_url": "",
+  "voice_fallback_method": "POST",
+  "voice_caller_id_lookup": "false",
+  "date_created": "Thu, 22 Mar 2012 00:00:00 +0000",
+  "date_updated": "Sun, 11 Nov 2012 02:38:02 +0000",
+  "sms_application_sid": "",
+  "sms_url": "https://www.telapi.com/data/inboundxml/",
+  "sms_method": "POST",
+  "sms_fallback_url": "",
+  "sms_fallback_method": "POST",
+  "heartbeat_url": "",
+  "heartbeat_method": "GET",
+  "capabilities": {
+    "voice": "True",
+    "sms": "True"
+  },
+  "hangup_callback": "",
+  "hangup_callback_method": "POST",
+  "api_version": "v1",
+  "uri": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers/{IncomingNumberSid}.json"
+}
+</pre>
+
+<h4 style="display:inline;">List Incoming Phone Numbers</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/incoming-phone-numbers/list/">Documentation</a><br>
+
+        <p>Request and print an incoming phone number list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'incoming_phone_numbers' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 0,
+  "page_size": 50,
+  "total": 5,
+  "start": 0,
+  "end": 5,
+  "uri": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers.json?Page=-1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers.json?Page=-1&amp;PageSize=50",
+  "incoming_phone_numbers": [
+    {
+      "sid": "{IncomingNumberSid}",
+      "account_sid": "{AccountSid}",
+      "friendly_name": "OpenHertz",
+      "phone_number": "+12015554994",
+      "type": "local",
+      "voice_application_sid": "",
+      "voice_url": " https://www.telapi.com/data/inboundxml/",
+      "voice_method": "POST",
+      "voice_fallback_url": "",
+      "voice_fallback_method": "POST",
+      "voice_caller_id_lookup": "false",
+      "date_created": "Thu, 22 Mar 2012 00:00:00 +0000",
+      "date_updated": "Mon, 12 Nov 2012 17:15:57 +0000",
+      "sms_application_sid": "",
+      "sms_url": " https://www.telapi.com/data/inboundxml/ ",
+      "sms_method": "POST",
+      "sms_fallback_url": "",
+      "sms_fallback_method": "POST",
+      "heartbeat_url": "",
+      "heartbeat_method": "POST",
+      "capabilities": {
+        "voice": "True",
+        "sms": "True"
+      },
+      "hangup_callback": "",
+      "hangup_callback_method": "POST",
+      "api_version": "v1",
+      "uri": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers/{IncomingNumberSid}.json"
+    },
+    {
+      "sid": "{IncomingNumberSid}",
+      "account_sid": "{AccountSid}",
+      "friendly_name": "electric-ivr",
+      "phone_number": "+12165551332",
+      "type": "local",
+      "voice_application_sid": "",
+      "voice_url": "https://www.telapi.com/data/inboundxml/",
+      "voice_method": "GET",
+      "voice_fallback_url": "",
+      "voice_fallback_method": "POST",
+      "voice_caller_id_lookup": "false",
+      "date_created": "Thu, 22 Mar 2012 00:00:00 +0000",
+      "date_updated": "Sun, 11 Nov 2012 02:38:02 +0000",
+      "sms_application_sid": "",
+      "sms_url": "https://www.telapi.com/data/inboundxml/",
+      "sms_method": "POST",
+      "sms_fallback_url": "",
+      "sms_fallback_method": "POST",
+      "heartbeat_url": "",
+      "heartbeat_method": "GET",
+      "capabilities": {
+        "voice": "True",
+        "sms": "True"
+      },
+      "hangup_callback": "",
+      "hangup_callback_method": "POST",
+      "api_version": "v1",
+      "uri": "/v1/Accounts/{AccountSid}/IncomingPhoneNumbers/{IncomingNumberSid}.json"
+    },
+  ]
+}
+</pre>
+
+<h4 style="display:inline;">Add Incoming Phone Number</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/incoming-phone-numbers/add-or-delete/">Documentation</a><br>
+
+        <p>Use the create method to add incoming phone numbers:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    [ 'incoming_phone_numbers' ],
+    {
+        AreaCode : '732'
+    },
+    function(response) {
+        util.log( 
+            "IncomingPhoneNumber SID: " + 
+            response.sid 
+        );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Delete Incoming Phone Number</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/incoming-phone-numbers/add-or-delete/">Documentation</a><br>
+
+        <p>Use the delete method to delete incoming phone numbers:</p>
+
+<pre class="prettyprint lang-js">
+client.delete(
+    [ 'incoming_phone_numbers', '{IncomingPhoneNumberSid}' ],
+    null,
+    function(response) {
+        util.log( 
+            response.friendly_name + " has successfully been deleted." 
+        );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Update Incoming Phone Number</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/incoming-phone-numbers/update/">Documentation</a><br>
+
+        <p>Use the update method to update incoming phone numbers:</p>
+
+<pre class="prettyprint lang-js">
+client.update(
+    [ 'incoming_phone_numbers', '{IncomingPhoneNumberSid}' ],
+    {
+        FriendlyName : '...'
+    },
+    function(response) {
+        util.log( 
+            "IncomingPhoneNumber SID: " + 
+            response.sid 
+        );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<hr><h2 id="available">Available Phone Numbers</h2>   
+
+<h4 style="display:inline;">List Available Phone Numbers</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/available-phone-numbers/list/">Documentation</a><br>
+
+        <p>Request and print an available phone number list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'available_phone_numbers', '{CountryCode}', '{Local/TollFree}' ],
+    null,
+    function(response) {
+          util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre>
+...
+</pre>
+
+<hr><h2 id="recordings">Recordings</h2>   
+
+<h4 style="display:inline;">View Recording</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/recordings/view/">Documentation</a><br>
+
+        <p>Request and print a recording resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'recordings', '{RecordingSid}' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{RecordingSid}",
+  "account_sid": "{AccountSid}",
+  "call_sid": "{CallSid}",
+  "duration": "32",
+  "date_created": "Sun, 11 Nov 2012 04:35:07 +0000",
+  "api_version": "v1",
+  "date_updated": "Sun, 11 Nov 2012 04:35:27 +0000",
+  "recording_url": "http://recordings.telapi.com/{RecordingBucket}/{RecordingSid}.mp3",
+  "uri": "/v1/Accounts/{AccountSid}/Recordings/{RecordingSid}.json"
+}
+</pre>
+
+<h4 style="display:inline;">List Recording</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/recordings/list/">Documentation</a><br>
+
+        <p>Request and print a recording list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'recordings' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "page": 0,
+  "num_pages": 1,
+  "page_size": 5,
+  "total": 2,
+  "start": 0,
+  "end": 2,
+  "uri": "/v1/Accounts/{AccountSid}/Recordings.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/Recordings.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/Recordings.json?Page=1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/Recordings.json?Page=1&amp;PageSize=50",
+  "recordings": [
+    {
+      "sid": "{RecordingSid}",
+      "account_sid": "{AccountSid}",
+      "call_sid": "{CallSid}",
+      "duration": "32",
+      "date_created": "Sun, 11 Nov 2012 04:35:07 +0000",
+      "api_version": "v1",
+      "date_updated": "Sun, 11 Nov 2012 04:35:27 +0000",
+      "recording_url": "http://recordings.telapi.com/{RecordingBucket}/{RecordingSid}.mp3",
+      "uri": "/v1/Accounts/{AccountSid}/Recordings/{RecordingSid}.json"
+    },
+    {
+      "sid": "{RecordingSid}",
+      "account_sid": "{AccountSid}",
+      "call_sid": "{CallSis}",
+      "duration": "18",
+      "date_created": "Sun, 11 Nov 2012 04:33:26 +0000",
+      "api_version": "v1",
+      "date_updated": "Sun, 11 Nov 2012 04:33:45 +0000",
+      "recording_url": "http://recordings.telapi.com/{RecordingBucket}/{RecordingSid}.mp3",
+      "uri": "/v1/Accounts/{AccountSid}/Recordings/{RecordingSid}.json"
+    }
+  ]
+}
+</pre>
+
+<hr><h2 id="notifications">Notifications</h2>   
+
+<h4 style="display:inline;">View Notification</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/notifications/view/">Documentation</a><br>
+
+        <p>Request and print a notification resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'notifications', '{RecordingSid}' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+      "sid": "{NotificationSid}",
+      "account_sid": "{AccountSid}",
+      "call_sid": "",
+      "api_version": "v1",
+      "date_created": "Mon, 12 Nov 2012 19:24:36 +0000",
+      "date_updated": "Mon, 12 Nov 2012 19:24:36 +0000",
+      "log": "0",
+      "error_code": 21227,
+      "more_info": "http://telapi.com/docs/api/rest/overview/errors/21227",
+      "message_text": "ErrorCode=21227&amp;Msg=SID+Could+not+be+found&amp;LogLevel=%280%2C+%27ERROR%27%29&amp;ObjectType=Call",
+      "message_date": "Mon, 12 Nov 2012 19:24:36 +0000",
+      "response_body": "",
+      "request_method": "GET",
+      "request_url": "https://api.telapi.com/2011-07-01/Accounts/{AccountSid}/Recordings.json",
+      "request_variables": "CallSid=REf533012fbfcc4f2eb721f1583d17c2d3",
+      "response_headers": "",
+      "uri": "/v1/Accounts/{AccountSid}/Notifications/{NotificationSid}.json"
+    }
+</pre>
+
+<h4 style="display:inline;">List Notifications</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/notifications/list/">Documentation</a><br>
+
+        <p>Use the get method to request notifications:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'notifications' ],
+    null,
+    function(response) {
+        for(var notification in response.notifications) {
+            util.log( 
+                "Error: " + 
+                response.notifications[notification].error_code + " " +
+                response.notifications[notification].more_info
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js" class="prettyprint lang-js">
+12 Nov 14:36:48 - Error: 21227 http://telapi.com/docs/api/rest/overview/errors/21227
+12 Nov 14:36:48 - Error: 21227 http://telapi.com/docs/api/rest/overview/errors/21227
+12 Nov 14:36:48 - Error: 11101 http://telapi.com/docs/api/rest/overview/errors/11101
+12 Nov 14:36:48 - Error: 30003 http://telapi.com/docs/api/rest/overview/errors/30003
+12 Nov 14:36:48 - Error: 13224 http://telapi.com/docs/api/rest/overview/errors/13224
+12 Nov 14:36:48 - Error: 12100 http://telapi.com/docs/api/rest/overview/errors/12100
+12 Nov 14:36:48 - Error: 31003 http://telapi.com/docs/api/rest/overview/errors/31003
+</pre>
+
+<hr><h2 id="transcriptions">Transcriptions</h2>   
+
+<h4 style="display:inline;">View Transcriptions</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/transcriptions/view/">Documentation</a><br>
+
+        <p>Request and print a transcription resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    [ 'transcriptions', '{TranscriptionSid}' ],
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+{
+  "sid": "{TranscriptionSid}",
+  "date_created": "Fri, 22 Jun 2012 15:51:05 +0000",
+  "date_updated": "Fri, 22 Jun 2012 16:01:22 +0000",
+  "account_sid": "{AccountSid}",
+  "status": "completed",
+  "type": "auto",
+  "audio_url": "http://api.phone-app.com/static/prompts/errors/invalid_entry_provided.mp3",
+  "duration": "1",
+  "transcription_text": "Invalid entry provided",
+  "api_version": "v1",
+  "price": "0.050000",
+  "transcribe_callback": "",
+  "callback_method": "POST",
+  "uri": "/v1/Accounts/{AccountSid}/Transcriptions/{TranscriptionSid}.json"
+}
+</pre>
+
+<h4 style="display:inline;">List Transcriptions</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/transcriptions/list/">Documentation</a><br>
+
+        <p>Request transcriptions with the get method:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'transcriptions',
+    null,
+    function(response) {
+        for(var transcription in response.transcriptions) {
+            util.log( 
+                "Transcription: " + 
+                response.transcriptions[transcription].transcription_text
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre class="prettyprint lang-js">
+12 Nov 14:54:00 - Transcription: We're sorry. The phone number entered has been restricted...
+12 Nov 14:54:00 - Transcription: Invalid entry provided
+12 Nov 14:54:00 - Transcription: We're sorry, the phone number entered has been restricted.
+12 Nov 14:54:00 - Transcription: We're sorry the phone number entered has been restricted.
+</pre>
+
+<h4 style="display:inline;">Transcribe Recording</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/transcriptions/transcribe-recording/">Documentation</a><br>
+
+        <p>Transcribe recordings with the create method:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    [ 'recordings', '{RecordingSid}', 'Transcriptions' ],
+    {
+        TranscribeCallback : 'http://liveoutput.com/transcriptions',
+        Quality : 'auto'
+    },
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Transcribe Audio URL</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/transcriptions/transcribe-audio-url/">Documentation</a><br>
+
+        <p>Transcribe audio files located at external URLs with the create method:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    'transcriptions',
+    {
+        AudioUrl : 'http://foo.com/file.mp3'
+    },
+    function(response) {
+        util.log( "Transcription SID: " + response.sid );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<hr><h2 id="carrier">Carrier Services</h2>
+
+<pre class="prettyprint lang-js">
+phone_number = ['{ E.164 Format }', '{ E.164 Format }'] 
+</pre>    
+
+<h4 style="display:inline;">Carrier Lookup</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/carrier-services/carrier-lookup/">Documentation</a><br>
+
+        <p>Request and print a carrier lookup resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'Carrier',
+    {
+        PhoneNumber : ['7325551234', '4081235545']
+    },
+    function(response) {
+        for(var carrier in response.carrier_lookups) {
+            util.log( 
+                "Lookup Result: " + 
+                response.carrier_lookups[carrier].carrier 
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre>
+12 Nov 15:22:50 - Lookup Result: AT&amp;T Mobility (New Cingular Wireless PCS, LLC)
+12 Nov 15:22:50 - Lookup Result: T-Mobile USA
+</pre>
+
+<h4 style="display:inline;">CNAM (caller id) Lookup</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/carrier-services/cnam-lookup/">Documentation</a><br>
+
+        <p>Request and print a cnam lookup resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'cnam',
+    {
+        PhoneNumber : ['7325551234', '4081235545']
+    },
+    function(response) {
+        for(var cnam in response.cnam_dips) {
+            util.log( 
+                "Lookup Result: " + 
+                response.cnam_dips[cnam].body 
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre>
+12 Nov 15:28:58 - Lookup Result: Chuck Norris    
+12 Nov 15:28:58 - Lookup Result: Joe Random
+</pre>
+
+<h4 style="display:inline;">BNA (billing name address) Lookup</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/carrier-services/bna-lookup/">Documentation</a><br>
+
+        <p>Request and print a bna lookup resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'bna',
+    {
+        PhoneNumber : ['7325551234', '4081235545']
+    },
+    function(response) {
+        for(var lookup in response.bna_lookups) {
+            util.log( 
+                "Lookup Result: " + 
+                response.bna_lookups[lookup].city + ", " + 
+                response.bna_lookups[lookup].state + ", " + 
+                response.bna_lookups[lookup].country_code
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre>
+12 Nov 15:33:29 - Lookup Result: TOMS RIVER, NJ, US
+12 Nov 15:33:29 - Lookup Result: HOLLYWOOD, CA, US
+</pre>
+
+<hr><h2 id="fraud">Fraud Control</h2>   
+
+<h4 style="display:inline;">List Fraud Control resources</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/fraud-control/list/">Documentation</a><br>
+
+        <p>Request and print a fraud control list resource:</p>
+
+<pre class="prettyprint lang-js">
+client.get(
+    'fraud',
+    null,
+    function(response) {
+        util.log( JSON.stringify(response) );
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<p>log example output:</p>
+
+<pre>
+{
+  "page": 0,
+  "num_pages": 0,
+  "page_size": 50,
+  "total": 7,
+  "start": 0,
+  "end": 7,
+  "uri": "/v1/Accounts/{AccountSid}/Fraud.json",
+  "first_page_uri": "/v1/Accounts/{AccountSid}/Fraud.json?Page=0&amp;PageSize=50",
+  "previous_page_uri": null,
+  "next_page_uri": "/v1/Accounts/{AccountSid}/Fraud.json?Page=-1&amp;PageSize=50",
+  "last_page_uri": "/v1/Accounts/{AccountSid}/Fraud.json?Page=-1&amp;PageSize=50",
+  "frauds": {
+    "max_outbound_rate": "0.400000",
+    "destinations": {
+      "blocked": [
+        {
+          "country_name": "New Zealand",
+          "country_code": "NZ",
+          "country_prefix": "+64",
+          "mobile_enabled": "True",
+          "landline_enabled": "True",
+          "sms_enabled": "True",
+          "is_lock": "False",
+          "date_created": "Thu, 16 Aug 2012 18:03:56 +0000",
+          "date_updated": "Tue, 9 Oct 2012 17:28:22 +0000"
+        },
+        {
+          "country_name": "Ukraine",
+          "country_code": "UA",
+          "country_prefix": "+380",
+          "mobile_enabled": "True",
+          "landline_enabled": "True",
+          "sms_enabled": "True",
+          "is_lock": "False",
+          "date_created": "Mon, 12 Nov 2012 16:56:21 +0000",
+          "date_updated": "Mon, 12 Nov 2012 16:56:42 +0000"
+        }
+      ],
+      "authorized": [
+        {
+          "country_name": "Bahrain",
+          "country_code": "BH",
+          "country_prefix": "+973",
+          "mobile_enabled": "True",
+          "landline_enabled": "True",
+          "sms_enabled": "True",
+          "is_lock": "False",
+          "date_created": "Thu, 30 Aug 2012 13:48:57 +0000",
+          "date_updated": "Thu, 30 Aug 2012 13:49:15 +0000",
+          "expiration_date": "Sat, 29 Sep 2012 13:49:15 +0000"
+        }
+      ],
+      "whitelisted": [
+        {
+          "country_name": "Canada",
+          "country_code": "CA",
+          "country_prefix": "+1",
+          "mobile_enabled": "True",
+          "landline_enabled": "False",
+          "sms_enabled": "False",
+          "is_lock": "False",
+          "date_created": "Mon, 30 Jul 2012 19:03:07 +0000",
+          "date_updated": "Tue, 28 Aug 2012 20:28:09 +0000"
+        },
+        {
+          "country_name": "United States",
+          "country_code": "US",
+          "country_prefix": "+1",
+          "mobile_enabled": "True",
+          "landline_enabled": "True",
+          "sms_enabled": "True",
+          "is_lock": "True",
+          "date_created": "Thu, 16 Aug 2012 18:07:27 +0000",
+          "date_updated": "Tue, 9 Oct 2012 16:46:33 +0000"
+        },
+        {
+          "country_name": "Belize",
+          "country_code": "BZ",
+          "country_prefix": "+501",
+          "mobile_enabled": "True",
+          "landline_enabled": "True",
+          "sms_enabled": "True",
+          "is_lock": "False",
+          "date_created": "Tue, 9 Oct 2012 17:23:16 +0000",
+          "date_updated": "Tue, 9 Oct 2012 17:23:31 +0000"
+        },
+        {
+          "country_name": "Yemen",
+          "country_code": "YE",
+          "country_prefix": "+967",
+          "mobile_enabled": "True",
+          "landline_enabled": "True",
+          "sms_enabled": "True",
+          "is_lock": "False",
+          "date_created": "Mon, 12 Nov 2012 17:03:22 +0000",
+          "date_updated": "Mon, 12 Nov 2012 17:05:15 +0000"
+        }
+      ]
+    }
+  }
+}
+</pre>    
+
+<h4 style="display:inline;">Authorize Destination</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/fraud-control/authorize/">Documentation</a><br>
+
+        <p>Authorize desctinations with the create method:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    [ 'fraud', 'Authorize', '{CountryCode}' ],
+    null,
+    function(response) {
+        for(var fraud in response.frauds) {
+            util.log( 
+                "Fraud Maximum Outbound Rate: " + 
+                response.frauds[fraud]['Outbound']['MaximumOutboundRate']
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Extend Destination Authorization</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/fraud-control/extend/">Documentation</a><br>
+
+        <p>Extend desctination authorization with the create method:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    [ 'fraud', 'Extend', '{CountryCode}' ],
+    null,
+    function(response) {
+        for(var fraud in response.frauds) {
+            util.log( 
+                "Fraud Maximum Outbound Rate: " + 
+                response.frauds[fraud]['Outbound']['MaximumOutboundRate']
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre> 
+
+<h4 style="display:inline;">Block Destination</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/fraud-control/block/">Documentation</a><br>
+
+        <p>Block desctinations with the create method:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    [ 'fraud', 'Block', '{CountryCode}' ],
+    null,
+    function(response) {
+        for(var fraud in response.frauds) {
+            util.log( 
+                "Fraud Maximum Outbound Rate: " + 
+                response.frauds[fraud]['Outbound']['MaximumOutboundRate']
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+<h4 style="display:inline;">Whitelist Destination</h4>
+
+        <a href="http://www.telapi.com/docs/api/rest/fraud-control/whitelist/">Documentation</a><br>
+
+        <p>Whitelist desctinations with the create method:</p>
+
+<pre class="prettyprint lang-js">
+client.create(
+    [ 'fraud', 'Whitelist', '{CountryCode}' ],
+    null,
+    function(response) {
+        for(var fraud in response.frauds) {
+            util.log( 
+                "Fraud Maximum Outbound Rate: " + 
+                response.frauds[fraud]['Outbound']['MaximumOutboundRate']
+            );
+        }
+    },
+    function(error) {
+        util.log("Error: " + error)
+    }
+);
+</pre>
+
+      </div>
+
+      <div class="span-one-third">
+
+        <div id="tab-navi">
+
+          <ul>
+            <li class="ui-state-default"><a href="https://github.com/telapi/telapi-node.js/zipball/master">Download ZIP File &#187;</a></li>
+            <li class="ui-state-default"><a href="https://github.com/telapi/telapi-node.js/tarball/master">Download TAR Ball &#187;</a></li>
+            <li class="ui-state-default"><a href="https://github.com/telapi/telapi-node.js">View On GitHub &#187;</a></li>
+          </ul>
+
+                  <ul>
+                          <li class="ui-state-default">
+                              <a href="#inboundxml">InboundXML</a>
+                          </li> 
+
+                          <li class="ui-state-default">
+                              <a href="#rest-api">REST API</a>
+                          </li>                
+                                                          
+                          <li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#accounts">Accounts</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#sms">SMS</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#calls">Calls</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#conferences">Conferences</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#applications">Applications</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#ipn">Incoming Phone Numbers</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#available">Available Phone Numbers</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#recordings">Recordings</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#notifications">Notifications</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#transcriptions">Transcriptions</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#carrier">Carrier Services</a>
+                                      </li>
+                                      <li style="font-weight: normal;font-family:ProximaNovaRegular" class='ui-state-default'>
+                                          <a href="#fraud">Fraud Control</a>
+                                      </li>                                                                                                                                                                            
+                          </li> 
+     
+                  </ul>
+          </div>
+      </div>
+
     </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Telapi-nodejs maintained by <a href="https://github.com/TelAPI">TelAPI</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
     
-
   </body>
 </html>
