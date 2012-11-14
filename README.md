@@ -3,6 +3,8 @@ telapi-nodejs
 
 This node.js library is an open source tool built to simplify interaction with the [TelAPI](http://telapi.com) telephony platform. TelAPI makes adding voice and SMS to applications fun and easy.
 
+For this libraries full documentation visit: http://telapi.github.com/telapi-nodejs
+
 For more information about TelAPI, please visit:  [telapi.com/features](http://www.telapi.com/features) or [telapi.com/docs](http://www.telapi.com/docs)
 
 ---
@@ -94,3 +96,7 @@ will render
 ```
 
 ---
+
+Documentation
+=============
+http://telapi.github.com/telapi-nodejs

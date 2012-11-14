@@ -3,7 +3,7 @@
 /**
  * 
  * Retrieve First and Last name + Address of the phone number holder. 
- * Only US phone numbers are available.
+ * Only US phone numbers can have BNA lookups performed on them.
  * 
  * --------------------------------------------------------------------------------
  * 

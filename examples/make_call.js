@@ -24,7 +24,7 @@ var configuration = require('./configuration');
 var client = new Client(configuration.account_sid, configuration.auth_token);
 
 // Create new Call.
-// Make sure the From, To and Url parameters are set correctly.
+// Make sure the From, To, and Url parameters are set correctly.
 client.create(
     'calls', 
     { 

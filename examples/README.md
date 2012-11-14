@@ -1,20 +1,17 @@
 ## Run Instructions
 
-In order to run files located under this path you will need to follow few easy steps. Runing them is very easy :) 
-
-Once you choose desired example you will need to:
-
+In order to run files located under this path you will need to follow a few steps. Runing them is very easy :) 
 
 #### Step 1 - Change credentials
 
-Every example file contains following block of the code:
+Every example file contains the following block of the code:
 
 ```javascript
 // Load configuration file
 var configuration = require('./configuration');
 ```
 
-which loads `configuration.js` file located under same path. File content is:
+which loads `configuration.js` file located under the same path. File content is:
 
 ```javascript
 module.exports = {
@@ -31,12 +28,12 @@ module.exports = {
 }
 ```
 
-`ACCOUNT_SID` and `AUTH_TOKEN` must be changed with real credentials which you can find under [TelAPI dashboard](https://www.telapi.com/dashboard)
+`ACCOUNT_SID` and `AUTH_TOKEN` must be changed with real credentials which you can find at [TelAPI dashboard](https://www.telapi.com/dashboard)
 
 
 #### Step 2 - Change parameters ( if needed )
 
-In case that choosen example is [Send SMS](https://github.com/TelAPI/telapi-nodejs/blob/master/examples/send_sms.js) you will need to update following block of the code:
+If you're trying to run the [Send SMS](https://github.com/TelAPI/telapi-nodejs/blob/master/examples/send_sms.js) example, you will need to update following block of code:
 
 ```javascript
 client.create(
@@ -60,7 +57,7 @@ where `From` and `To` must be real numbers.
     
 #### Step 3 - Run the code!
 
-There are many ways how code can be run. We will show you here how to run it from terminal:
+There are many ways code can be run. Here is how you would run an example from the terminal:
 
 ```shell
 cd telapi-nodejs/examples

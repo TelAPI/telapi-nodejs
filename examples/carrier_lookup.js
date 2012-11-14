@@ -3,7 +3,7 @@
 /**
  * 
  * Find out carrier details about particular number
- * Carrier lookup method supports international lookup!
+ * The carrier lookup method supports international lookups!
  * 
  * --------------------------------------------------------------------------------
  * 
