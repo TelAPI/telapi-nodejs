@@ -155,6 +155,32 @@ util.log( response.toString() );
 </pre>
 
 <p>The last design pattern to be aware of is used for nesting elements. To nest an element within another, just instantiate the nested element within the parent element when appending to the response. This is demonstrated by the code above which outputs a conference element nested within a dial.</p>
+
+<h4>Tips &amp; Warnings:</h4>
+<p>&bull; Nesting of elements can be achieved alternatively like so:</p>
+<pre class="prettyprint lang-js">
+var util = require("util");
+ 
+// Get TelAPI InboundXML helper
+var InboundXML = require('telapi').inboundxml;
+ 
+// Initialize TelAPI Response element.
+var response = new InboundXML.Response();
+
+// Initialize TelAPI and assign Dial element.
+var dial = new InboundXML.Dial();
+
+// Nest Sip element within Dial
+dial.append(new InboundXML.Sip('username@domain.com'));
+
+response.append(dial);
+
+util.log( response.toString() );
+</pre>
+<p>&bull; Number is a reserved word, so generation of the &lt;Number&gt; element is in an abbreviated manner:</p>
+<pre class="prettyprint lang-js">
+new InboundXML.Num()
+</pre>
         
         <hr><h1 id="rest-api">REST API</h1>
 
