@@ -306,9 +306,7 @@
                 "parent_resources": [
                     "accounts"
                 ],
-                "create_params": {
-                    "friendly_name": "FriendlyName"
-                }
+                "create_params": {}
             },
             "fraud": {
                 "name": "Fraud",
