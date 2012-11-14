@@ -1205,7 +1205,6 @@ client.update(
 <pre class="prettyprint lang-js">
 client.delete(
     [ 'conferences', '{ConferenceSid}', 'Participants', '{CallSid}' ],
-    null,
     function(response) {
         util.log( JSON.stringify(response) );
     },
@@ -1419,7 +1418,6 @@ client.update(
 <pre class="prettyprint lang-js">
 client.delete(
     [ 'applications', '{ApplicationSid}' ],
-    null,
     function(response) {
         util.log( 
             "response.friendlyname + " has successfully been deleted." 
@@ -1619,7 +1617,6 @@ client.create(
 <pre class="prettyprint lang-js">
 client.delete(
     [ 'incoming_phone_numbers', '{IncomingPhoneNumberSid}' ],
-    null,
     function(response) {
         util.log( 
             response.friendly_name + " has successfully been deleted." 
