@@ -225,7 +225,7 @@
             },
             "available_phone_numbers": {
                 "name": "AvailablePhoneNumber",
-                "url": "AvailablePhoneNumbers/US/Local",
+                "url": "AvailablePhoneNumbers",
                 "attributes": [
                     "friendly_name",
                     "phone_number",
@@ -328,8 +328,8 @@
                 ],
                 "create_params": {}
             },
-            "bna_lookup": {
-                "name": "bna_lookup",
+            "bna": {
+                "name": "bna",
                 "url": "BNA",
                 "attributes": [],
                 "parent_resources": [
@@ -366,7 +366,8 @@
                     "Redirect",
                     "Reject",
                     "Pause",
-                    "Sms"
+                    "Sms",
+                    "GetSpeech"
                 ],
                 "docs_url": "http: //www.telapi.com/docs/api/inboundxml/voice/response/",
                 "blank": false
@@ -423,7 +424,7 @@
             },
             "GetSpeech": {
                 "attributes": [
-                    "grammar", "action", "method", "timeout", "playBeep"
+                    "grammar", "action", "method", "timeout", "playBeep", "numDigits"
                 ],
                 "nesting": [
                     "Say", "Play", "Pause"
