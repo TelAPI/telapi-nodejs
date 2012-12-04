@@ -1676,7 +1676,65 @@ client.get(
 <p>log example output:</p>
 
 <pre>
-...
+{
+   "page":0,
+   "num_pages":1,
+   "page_size":50,
+   "total":2,
+   "start":0,
+   "end":1,
+   "uri":"/v1/Accounts/{AccountSid}/AvailablePhoneNumbers/US/Local.json",
+   "first_page_uri":"/v1/Accounts/{AccountSid}/AvailablePhoneNumbers/US/Local.json?Page=0&amp;PageSize=50",
+   "previous_page_uri":null,
+   "next_page_uri":null,
+   "last_page_uri":"/v1/Accounts/{AccountSid}/AvailablePhoneNumbers/US/Local.json?Page=0&amp;PageSize=50",
+   "available_phone_numbers":[
+      {
+         "friendly_name":"",
+         "phone_number":"+16505553182",
+         "lata":null,
+         "rate_center":null,
+         "latitude":null,
+         "longitude":null,
+         "region":null,
+         "postal_code":null,
+         "iso_country":"US",
+         "country_code":"+1",
+         "npa":"650",
+         "exchange":"539",
+         "city":"",
+         "type":"local",
+         "setup_cost":1,
+         "monthly_cost":1,
+         "unblock_support":false,
+         "voice_enabled":true,
+         "sms_enabled":true,
+         "supports_forwarded_from":true
+      },
+      {
+         "friendly_name":"",
+         "phone_number":"+17145555825",
+         "lata":null,
+         "rate_center":null,
+         "latitude":null,
+         "longitude":null,
+         "region":null,
+         "postal_code":null,
+         "iso_country":"US",
+         "country_code":"+1",
+         "npa":"714",
+         "exchange":"849",
+         "city":"",
+         "type":"local",
+         "setup_cost":1,
+         "monthly_cost":1,
+         "unblock_support":false,
+         "voice_enabled":true,
+         "sms_enabled":true,
+         "supports_forwarded_from":true
+      }
+   ]
+}
 </pre>
 
 <hr><h2 id="recordings">Recordings</h2>   
@@ -1979,10 +2037,6 @@ client.create(
 
 <hr><h2 id="carrier">Carrier Services</h2>
 
-<pre class="prettyprint lang-js">
-phone_number = ['{ E.164 Format }', '{ E.164 Format }'] 
-</pre>    
-
 <h4 style="display:inline;">Carrier Lookup</h4>
 
         <a href="http://www.telapi.com/docs/api/rest/carrier-services/carrier-lookup/">Documentation</a><br>
@@ -2216,7 +2270,7 @@ client.get(
 
         <a href="http://www.telapi.com/docs/api/rest/fraud-control/authorize/">Documentation</a><br>
 
-        <p>Authorize desctinations with the create method:</p>
+        <p>Authorize destinations with the create method:</p>
 
 <pre class="prettyprint lang-js">
 client.create(
@@ -2240,7 +2294,7 @@ client.create(
 
         <a href="http://www.telapi.com/docs/api/rest/fraud-control/extend/">Documentation</a><br>
 
-        <p>Extend desctination authorization with the create method:</p>
+        <p>Extend destination authorization with the create method:</p>
 
 <pre class="prettyprint lang-js">
 client.create(
@@ -2264,7 +2318,7 @@ client.create(
 
         <a href="http://www.telapi.com/docs/api/rest/fraud-control/block/">Documentation</a><br>
 
-        <p>Block desctinations with the create method:</p>
+        <p>Block destinations with the create method:</p>
 
 <pre class="prettyprint lang-js">
 client.create(
@@ -2288,7 +2342,7 @@ client.create(
 
         <a href="http://www.telapi.com/docs/api/rest/fraud-control/whitelist/">Documentation</a><br>
 
-        <p>Whitelist desctinations with the create method:</p>
+        <p>Whitelist destinations with the create method:</p>
 
 <pre class="prettyprint lang-js">
 client.create(
