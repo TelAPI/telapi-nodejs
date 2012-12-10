@@ -413,7 +413,7 @@
                     "transcribe",
                     "transcribeCallback",
                     "playBeep",
-                    "bothLegs",
+                    "direction",
                     "fileFormat"
                 ],
                 "nesting": [],
