@@ -38,8 +38,8 @@ client.get(
 
             util.log("Available Phone Number: " + phone_number);
 
-            Now what we need to is add the available number to our account using /IncomingPhoneNumbers
-            Remember that the price depends on the phone number type & location.
+            //Now what we need to is add the available number to our account using /IncomingPhoneNumbers
+            //Remember that the price depends on the phone number type & location.
             client.create(
                 'incoming_phone_numbers',
                 { 'PhoneNumber' : phone_number },
