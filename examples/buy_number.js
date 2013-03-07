@@ -25,12 +25,12 @@ var client = new Client(configuration.account_sid, configuration.auth_token);
 
 // Retrieve an available phone number, and if successful, attempt to purchase the number.
 client.get(
-    'available_phone_numbers', 
+    ['available_phone_numbers', 'US', 'Local'], 
     { 
         'PageSize' : 1  // Limit to 1 available number per page
     },
     function(response) { // SUCCESS CALLBACK
-        
+
         // Iterate through available_phone_numbers 
         for ( var available_number in response.available_phone_numbers ) {
 
@@ -38,8 +38,8 @@ client.get(
 
             util.log("Available Phone Number: " + phone_number);
 
-            // Now what we need to is add the available number to our account using /IncomingPhoneNumbers
-            // Remember that the price depends on the phone number type & location.
+            Now what we need to is add the available number to our account using /IncomingPhoneNumbers
+            Remember that the price depends on the phone number type & location.
             client.create(
                 'incoming_phone_numbers',
                 { 'PhoneNumber' : phone_number },

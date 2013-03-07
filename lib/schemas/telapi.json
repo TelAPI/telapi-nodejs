@@ -334,6 +334,39 @@
                     "accounts"
                 ],
                 "create_params": {}
+            },
+            "faxes": {
+                "name": "Faxes",
+                "url": "Faxes",
+                "attributes": [
+                    "url",
+                    "status",
+                    "direction",
+                    "date_updated",
+                    "price",
+                    "from",
+                    "account_sid",
+                    "to",
+                    "sid",
+                    "date_sent",
+                    "date_created",
+                    "api_version",
+                    "uri"
+                ],
+                "parent_resources": [
+                    "accounts"
+                ],
+                "create_params": {
+                    "status_callback": "StatusCallback",
+                    "status_callback_method": "StatusCallbackMethod",
+                    "from": "From",
+                    "to": "To",
+                    "url": "Url"
+                },
+                "filter_params": [
+                    "To",
+                    "From"
+                ]
             }
         },
         "pagination": [
@@ -373,7 +406,8 @@
             "Say": {
                 "attributes": [
                     "voice",
-                    "loop"
+                    "loop",
+                    "language"
                 ],
                 "nesting": [],
                 "docs_url": "http: //www.telapi.com/docs/api/inboundxml/voice/say/",
@@ -412,6 +446,7 @@
                     "maxLength",
                     "transcribe",
                     "transcribeCallback",
+                    "transcriptionQuality",
                     "playBeep",
                     "direction",
                     "fileFormat"
@@ -447,7 +482,10 @@
                     "straightToVm",
                     "heartbeatUrl",
                     "heartbeatMethod",
-                    "forwardedFrom"
+                    "forwardedFrom",
+                    "ifMachine",
+                    "ifMachineUrl",
+                    "ifMachineMethod"
                 ],
                 "nesting": [
                     "Number",
@@ -508,6 +546,20 @@
                 ],
                 "nesting": [],
                 "docs_url": "http: //www.telapi.com/docs/api/inboundxml/voice/redirect/",
+                "blank": true
+            },
+            "Ping": {
+                "attributes": [
+                    "method"
+                ],
+                "nesting": [],
+                "docs_url": "http://www.telapi.com/docs/api/inboundxml/voice/ping/",
+                "blank": false
+            },
+            "PlayLastRecording": {
+                "attributes": [],
+                "nesting": [],
+                "docs_url": "http://www.telapi.com/docs/api/inboundxml/voice/playlastrecording/",
                 "blank": true
             },
             "Reject": {
