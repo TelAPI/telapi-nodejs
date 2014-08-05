@@ -449,7 +449,8 @@
                     "transcriptionQuality",
                     "playBeep",
                     "direction",
-                    "fileFormat"
+                    "fileFormat",
+                    "background"
                 ],
                 "nesting": [],
                 "docs_url": "http: //www.telapi.com/docs/api/inboundxml/voice/record/",
