@@ -149,17 +149,17 @@
             },
             "carrier": {
                 "name": "Carrier",
-                "url": "Carrier",
+                "url": "Lookups/Carrier",
                 "attributes": [
                     "phone_number",
                     "date_updated",
                     "price",
-                    "cic_code",
-                    "country",
+                    "carrier_id",
+                    "country_code",
                     "uri",
                     "account_sid",
-                    "carrier",
-                    "is_mobile",
+                    "network",
+                    "mobile",
                     "sid",
                     "date_created",
                     "api_version"
